@@ -23,3 +23,11 @@ if (!Element.prototype.animate) {
 if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {}
 }
+
+HTMLDialogElement.prototype.showModal = function showModal() {
+  this.open = true
+}
+
+HTMLDialogElement.prototype.close = function close() {
+  this.open = false
+}
