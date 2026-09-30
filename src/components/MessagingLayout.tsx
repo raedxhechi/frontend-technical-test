@@ -8,6 +8,8 @@ import { convertConversation } from '../utils/convertConversation'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
 import styles from './MessagingLayout.module.css'
 
+const CONVERSATION_ROUTE = '/conversations/[id]'
+
 interface MessagingLayoutProps {
   children: ReactNode
   footer?: ReactNode | false
@@ -24,7 +26,8 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
   } = useListConversationsWithLastMessage(userId)
 
 
-  const { query } = useRouter()
+  const { pathname, query } = useRouter()
+  const isThreadOpen = pathname === CONVERSATION_ROUTE
   const selectedConversationId = typeof query.id === 'string' ? Number(query.id) : undefined
 
   const selectedConversation = conversations?.find(
@@ -32,7 +35,7 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
   )
 
   return (
-    <div className={styles.layout} data-thread-open={selectedConversationId !== undefined}>
+    <div className={styles.layout} data-thread-open={isThreadOpen}>
       <aside className={styles.sidebar} aria-label="Conversations">
         <h1 className={styles.title}>Conversations</h1>
 
@@ -63,7 +66,7 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
       </aside>
 
       <section className={styles.thread}>
-        {selectedConversationId !== undefined && (
+        {isThreadOpen && (
           <ConversationHeader
             correspondantNickname={
               selectedConversation
