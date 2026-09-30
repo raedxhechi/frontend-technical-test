@@ -10,6 +10,8 @@ import styles from './MessageList.module.css'
 interface MessageListProps {
   messages: Message[]
   userId: User['id']
+  failedMessages?: Message[]
+  onRetry?: (message: Message) => void
 }
 
 interface DayGroup {
@@ -32,8 +34,14 @@ function groupByDay(messages: Message[]): DayGroup[] {
   }, [])
 }
 
-export function MessageList({ messages, userId }: MessageListProps): ReactElement {
-  const oldestFirst = [...messages].sort((a, b) => a.timestamp - b.timestamp)
+export function MessageList({
+  messages,
+  userId,
+  failedMessages = [],
+  onRetry,
+}: MessageListProps): ReactElement {
+  const failedIds = new Set(failedMessages.map((message) => message.id))
+  const oldestFirst = [...messages, ...failedMessages].sort((a, b) => a.timestamp - b.timestamp)
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -49,10 +57,21 @@ export function MessageList({ messages, userId }: MessageListProps): ReactElemen
           <ul className={styles.list}>
             {group.messages.map((message) => {
               const summary = convertMessage(message, userId)
+              const hasFailed = failedIds.has(message.id)
 
               return (
                 <li key={summary.id} className={styles.item} data-own={summary.isFromLoggedUser}>
-                  <MessageBubble message={summary} />
+                  <MessageBubble message={summary} hasFailed={hasFailed} />
+
+                  {hasFailed && (
+                    <button
+                      type="button"
+                      className={styles.retry}
+                      onClick={() => onRetry?.(message)}
+                    >
+                      Échec de l’envoi. Réessayer
+                    </button>
+                  )}
                 </li>
               )
             })}

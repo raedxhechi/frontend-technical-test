@@ -31,9 +31,30 @@
 
 .item {
   display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  align-items: flex-start;
   align-self: flex-start;
   max-width: 75%;
   animation: message-in 180ms ease-out;
+}
+
+.item[data-own='true'] {
+  align-items: flex-end;
+}
+
+.retry {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-error);
+  font: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.retry:hover {
+  text-decoration: underline;
 }
 
 @keyframes message-in {

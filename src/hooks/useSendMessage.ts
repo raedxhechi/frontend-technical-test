@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { MessageOperation, getQueryKey } from './useListMessages'
 import { sendMessage } from '../services/messages'
@@ -14,36 +15,49 @@ interface SendMessageContext {
 export function useSendMessage(conversationId: Conversation['id'], userId: User['id']) {
   const queryClient = useQueryClient()
   const queryKey = getQueryKey(MessageOperation.List, conversationId)
+  const [failedMessages, setFailedMessages] = useState<Message[]>([])
 
-  return useMutation<Message, Error, string, SendMessageContext>({
+  const mutation = useMutation<Message, Error, Message, SendMessageContext>({
     mutationKey: getQueryKey(MessageOperation.Create, conversationId),
-    mutationFn: (body) =>
+    mutationFn: (message) =>
       sendMessage(conversationId, {
-        authorId: userId,
-        body,
-        timestamp: Math.floor(Date.now() / MILLISECONDS_PER_SECOND),
+        authorId: message.authorId,
+        body: message.body,
+        timestamp: message.timestamp,
       }),
 
-    onMutate: async (body) => {
+    onMutate: async (message) => {
       await queryClient.cancelQueries({ queryKey })
-
       const previousMessages = queryClient.getQueryData<Message[]>(queryKey)
-      const timestamp = Math.floor(Date.now() / MILLISECONDS_PER_SECOND)
 
-      queryClient.setQueryData<Message[]>(queryKey, (messages = []) => [
-        ...messages,
-        { id: -Date.now(), conversationId, authorId: userId, timestamp, body },
-      ])
+      queryClient.setQueryData<Message[]>(queryKey, (messages = []) => [...messages, message])
 
       return { previousMessages }
     },
 
-    onError: (_error, _body, context) => {
+    onError: (_error, message, context) => {
       queryClient.setQueryData(queryKey, context?.previousMessages)
+      setFailedMessages((failed) => [...failed, message])
     },
 
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey })
     },
   })
+
+  const send = (body: string) =>
+    mutation.mutate({
+      id: -Date.now(),
+      conversationId,
+      authorId: userId,
+      timestamp: Math.floor(Date.now() / MILLISECONDS_PER_SECOND),
+      body,
+    })
+
+  const retry = (message: Message) => {
+    setFailedMessages((failed) => failed.filter((failedMessage) => failedMessage.id !== message.id))
+    mutation.mutate(message)
+  }
+
+  return { send, retry, failedMessages }
 }

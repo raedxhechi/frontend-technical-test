@@ -49,3 +49,7 @@
     transform: rotate(360deg);
   }
 }
+
+.bubble[data-failed='true'] {
+  opacity: 0.55;
+}

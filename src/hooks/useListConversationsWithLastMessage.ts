@@ -9,6 +9,7 @@ export function useListConversationsWithLastMessage(userId: User['id']) {
     data: conversations,
     isPending: areConversationsPending,
     isError,
+    refetch,
   } = useListConversations(userId)
 
   const messageQueries = useQueries({
@@ -34,5 +35,5 @@ export function useListConversationsWithLastMessage(userId: User['id']) {
           : conversation
       })
 
-  return { data, isPending, isError }
+  return { data, isPending, isError, refetch }
 }

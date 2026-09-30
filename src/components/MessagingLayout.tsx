@@ -16,7 +16,12 @@ interface MessagingLayoutProps {
 
 export function MessagingLayout({ children, footer }: MessagingLayoutProps): ReactElement {
   const userId = getLoggedUserId()
-  const { data: conversations, isPending, isError } = useListConversationsWithLastMessage(userId)
+  const {
+    data: conversations,
+    isPending,
+    isError,
+    refetch,
+  } = useListConversationsWithLastMessage(userId)
 
 
   const { query } = useRouter()
@@ -32,7 +37,15 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
         <h1 className={styles.title}>Conversations</h1>
 
         {isPending && <ConversationListSkeleton />}
-        {isError && <p className={styles.state}>Les conversations n’ont pas pu être chargées.</p>}
+        {isError && (
+          <div className={styles.state}>
+            <p className={styles.stateText}>Les conversations n’ont pas pu être chargées.</p>
+
+            <button type="button" className={styles.retry} onClick={() => refetch()}>
+              Réessayer
+            </button>
+          </div>
+        )}
 
         {conversations?.length === 0 && (
           <p className={styles.state}>Vous n’avez aucune conversation.</p>
