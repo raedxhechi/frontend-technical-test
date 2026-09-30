@@ -4,6 +4,7 @@ import type { Conversation } from '../types/conversation'
 
 export enum MessageOperation {
   List = 'list',
+  Create = 'create',
 }
 
 export const getQueryKey = (

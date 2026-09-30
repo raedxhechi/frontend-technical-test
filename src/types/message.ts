@@ -11,4 +11,5 @@ export interface MessageSummary {
   body: string
   time: string
   isFromLoggedUser: boolean
+  isPending: boolean
 }

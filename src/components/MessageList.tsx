@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { useEffect, useRef } from 'react'
 import { MessageBubble } from './MessageBubble'
 import type { Message } from '../types/message'
 import type { User } from '../types/user'
@@ -33,6 +34,11 @@ function groupByDay(messages: Message[]): DayGroup[] {
 
 export function MessageList({ messages, userId }: MessageListProps): ReactElement {
   const oldestFirst = [...messages].sort((a, b) => a.timestamp - b.timestamp)
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ block: 'end' })
+  }, [messages])
 
   return (
     <div className={styles.thread}>
@@ -53,6 +59,8 @@ export function MessageList({ messages, userId }: MessageListProps): ReactElemen
           </ul>
         </section>
       ))}
+
+      <div ref={bottomRef} className={styles.bottomAnchor} />
     </div>
   )
 }

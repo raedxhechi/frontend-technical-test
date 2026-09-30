@@ -8,5 +8,6 @@ export function convertMessage(message: Message, userId: User['id']): MessageSum
     body: message.body,
     time: formatMessageTime(message.timestamp),
     isFromLoggedUser: message.authorId === userId,
+    isPending: message.id < 0,
   }
 }

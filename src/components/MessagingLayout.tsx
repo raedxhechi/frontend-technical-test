@@ -2,19 +2,20 @@ import type { ReactElement, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 import { ConversationHeader } from './ConversationHeader'
 import { ConversationList } from './ConversationList'
-import { useListConversations } from '../hooks/useListConversations'
+import { useListConversationsWithLastMessage } from '../hooks/useListConversationsWithLastMessage'
 import { convertConversation } from '../utils/convertConversation'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
 import styles from './MessagingLayout.module.css'
 
 interface MessagingLayoutProps {
   children: ReactNode
+  footer?: ReactNode | false
 }
 
 
-export function MessagingLayout({ children }: MessagingLayoutProps): ReactElement {
+export function MessagingLayout({ children, footer }: MessagingLayoutProps): ReactElement {
   const userId = getLoggedUserId()
-  const { data: conversations, isPending, isError } = useListConversations(userId)
+  const { data: conversations, isPending, isError } = useListConversationsWithLastMessage(userId)
 
 
   const { query } = useRouter()
@@ -59,6 +60,8 @@ export function MessagingLayout({ children }: MessagingLayoutProps): ReactElemen
         )}
 
         <div className={styles.threadContent}>{children}</div>
+
+        {footer}
       </section>
     </div>
   )

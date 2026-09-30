@@ -10,7 +10,11 @@ export function MessageBubble({ message }: MessageBubbleProps): ReactElement {
   return (
     <div className={styles.bubble} data-own={message.isFromLoggedUser}>
       <p className={styles.body}>{message.body}</p>
-      <span className={styles.time}>{message.time}</span>
+
+      <span className={styles.footer}>
+        {message.isPending && <span className={styles.spinner} role="status" aria-label="Envoi en cours" />}
+        <span className={styles.time}>{message.time}</span>
+      </span>
     </div>
   )
 }

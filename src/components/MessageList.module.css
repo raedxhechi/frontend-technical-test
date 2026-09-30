@@ -38,3 +38,7 @@
 .item[data-own='true'] {
   align-self: flex-end;
 }
+
+.bottomAnchor {
+  scroll-margin-block-end: var(--space-4);
+}

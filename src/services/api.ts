@@ -13,3 +13,11 @@ export async function fetchJson<T>(path: string, init?: RequestInit): Promise<T>
 export function get<T>(path: string): Promise<T> {
   return fetchJson<T>(path)
 }
+
+export function post<T>(path: string, body: unknown): Promise<T> {
+  return fetchJson<T>(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
