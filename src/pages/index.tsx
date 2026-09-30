@@ -4,11 +4,6 @@ import Head from 'next/head'
 import { getUser } from '../services/users'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
 
-/**
- * Entry point of the app: it only ever renders when there is no logged user,
- * since `getServerSideProps` redirects authenticated visitors straight to
- * their conversations.
- */
 export default function Home(): ReactElement {
   return (
     <>
