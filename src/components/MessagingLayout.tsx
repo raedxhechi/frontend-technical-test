@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 import { ConversationHeader } from './ConversationHeader'
 import { ConversationList } from './ConversationList'
+import { ConversationListSkeleton } from './ConversationListSkeleton'
 import { useListConversationsWithLastMessage } from '../hooks/useListConversationsWithLastMessage'
 import { convertConversation } from '../utils/convertConversation'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
@@ -30,7 +31,7 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
       <aside className={styles.sidebar} aria-label="Conversations">
         <h1 className={styles.title}>Conversations</h1>
 
-        {isPending && <p className={styles.state}>Chargement des conversations…</p>}
+        {isPending && <ConversationListSkeleton />}
         {isError && <p className={styles.state}>Les conversations n’ont pas pu être chargées.</p>}
 
         {conversations?.length === 0 && (
