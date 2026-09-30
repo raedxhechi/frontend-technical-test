@@ -6,3 +6,10 @@ export interface Conversation {
   senderNickname: string,
   lastMessageTimestamp: number,
 }
+
+export interface ConversationSummary {
+  id: number
+  correspondantId: number
+  correspondantNickname: string
+  lastMessageDate: string
+}
