@@ -5,7 +5,11 @@ import { getMessages } from '../services/messages'
 import type { User } from '../types/user'
 
 export function useListConversationsWithLastMessage(userId: User['id']) {
-  const { data: conversations, isPending, isError } = useListConversations(userId)
+  const {
+    data: conversations,
+    isPending: areConversationsPending,
+    isError,
+  } = useListConversations(userId)
 
   const messageQueries = useQueries({
     queries: (conversations ?? []).map((conversation) => ({
@@ -14,15 +18,21 @@ export function useListConversationsWithLastMessage(userId: User['id']) {
     })),
   })
 
-  const data = conversations?.map((conversation, index) => {
-    const messages = messageQueries[index]?.data ?? []
-    const lastMessageTimestamp = messages.reduce(
-      (latest, message) => Math.max(latest, message.timestamp),
-      0,
-    )
+  const isPending = areConversationsPending || messageQueries.some((query) => query.isPending)
 
-    return lastMessageTimestamp > 0 ? { ...conversation, lastMessageTimestamp } : conversation
-  })
+  const data = isPending
+    ? undefined
+    : conversations?.map((conversation, index) => {
+        const messages = messageQueries[index]?.data ?? []
+        const lastMessageTimestamp = messages.reduce(
+          (latest, message) => Math.max(latest, message.timestamp),
+          0,
+        )
+
+        return lastMessageTimestamp > 0
+          ? { ...conversation, lastMessageTimestamp }
+          : conversation
+      })
 
   return { data, isPending, isError }
 }
