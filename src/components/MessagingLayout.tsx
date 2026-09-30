@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { useRouter } from 'next/router'
 import { ConversationHeader } from './ConversationHeader'
 import { ConversationList } from './ConversationList'
+import { NewConversation } from './NewConversation'
 import { ConversationListSkeleton } from './ConversationListSkeleton'
 import { useListConversationsWithLastMessage } from '../hooks/useListConversationsWithLastMessage'
 import { convertConversation } from '../utils/convertConversation'
@@ -37,7 +38,11 @@ export function MessagingLayout({ children, footer }: MessagingLayoutProps): Rea
   return (
     <div className={styles.layout} data-thread-open={isThreadOpen}>
       <aside className={styles.sidebar} aria-label="Conversations">
-        <h1 className={styles.title}>Conversations</h1>
+        <header className={styles.header}>
+          <h1 className={styles.title}>Conversations</h1>
+
+          <NewConversation conversations={conversations ?? []} userId={userId} />
+        </header>
 
         {isPending && <ConversationListSkeleton />}
         {isError && (
