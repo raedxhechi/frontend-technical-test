@@ -1,7 +1,7 @@
 .layout {
   display: grid;
   height: 100%;
-  overflow: hidden;
+  overflow: clip;
   background: var(--color-surface);
 }
 
