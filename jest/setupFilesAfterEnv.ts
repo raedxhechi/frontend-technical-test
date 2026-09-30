@@ -19,3 +19,7 @@ if (!Element.prototype.animate) {
     finished: Promise.resolve(),
   })) as unknown as Element['animate']
 }
+
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {}
+}
