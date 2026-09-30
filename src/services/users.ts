@@ -6,3 +6,7 @@ export async function getUser(userId: User['id']): Promise<User | null> {
 
   return user ?? null
 }
+
+export function getUsers(): Promise<User[]> {
+  return get<User[]>('/users')
+}
