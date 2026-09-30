@@ -1,4 +1,7 @@
+import { useState } from 'react'
 import type { AppProps } from 'next/app'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
 import '../styles/globals.css'
 
@@ -6,5 +9,14 @@ import '../styles/globals.css'
 export const loggedUserId = getLoggedUserId()
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  
+  const [queryClient] = useState(() => new QueryClient())
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <Component {...pageProps} />
+      </ErrorBoundary>
+    </QueryClientProvider>
+  )
 }

@@ -1,0 +1,59 @@
+.conversation {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-height: 3.5rem;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid transparent;
+}
+
+.conversation:hover {
+  background: var(--color-surface-hover);
+}
+
+.conversation[aria-current='page'] {
+  background: var(--color-surface-selected);
+  border-left-color: var(--color-accent-strong);
+}
+
+.details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.heading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.nickname {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.date {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+}
+
+.preview {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.prefix {
+  color: var(--color-text);
+}
