@@ -9,7 +9,6 @@ interface ConversationProps {
   isSelected?: boolean
 }
 
-
 export function Conversation({ conversation, isSelected = false }: ConversationProps): ReactElement {
   return (
     <Link
@@ -20,8 +19,19 @@ export function Conversation({ conversation, isSelected = false }: ConversationP
       <Avatar nickname={conversation.correspondantNickname} />
 
       <span className={styles.details}>
-        <span className={styles.nickname}>{conversation.correspondantNickname}</span>
-        <span className={styles.date}>{conversation.lastMessageDate}</span>
+        <span className={styles.heading}>
+          <span className={styles.nickname}>{conversation.correspondantNickname}</span>
+          <span className={styles.date}>{conversation.lastMessageDate}</span>
+        </span>
+
+        {conversation.lastMessage !== undefined && (
+          <span className={styles.preview}>
+            {conversation.isLastMessageFromLoggedUser && (
+              <span className={styles.prefix}>Vous&nbsp;: </span>
+            )}
+            {conversation.lastMessage}
+          </span>
+        )}
       </span>
     </Link>
   )

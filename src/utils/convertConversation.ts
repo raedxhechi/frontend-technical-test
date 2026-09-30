@@ -1,9 +1,9 @@
-import type { Conversation, ConversationSummary } from '../types/conversation'
+import type { ConversationSummary, ConversationWithLastMessage } from '../types/conversation'
 import type { User } from '../types/user'
 import { formatConversationDate } from './formatConversationDate'
 
 export function convertConversation(
-  conversation: Conversation,
+  conversation: ConversationWithLastMessage,
   userId: User['id'],
 ): ConversationSummary {
   const userIsSender = conversation.senderId === userId
@@ -15,5 +15,7 @@ export function convertConversation(
       ? conversation.recipientNickname
       : conversation.senderNickname,
     lastMessageDate: formatConversationDate(conversation.lastMessageTimestamp),
+    lastMessage: conversation.lastMessage?.body,
+    isLastMessageFromLoggedUser: conversation.lastMessage?.authorId === userId,
   }
 }

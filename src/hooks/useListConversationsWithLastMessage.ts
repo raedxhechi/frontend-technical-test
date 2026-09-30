@@ -2,6 +2,8 @@ import { useQueries } from '@tanstack/react-query'
 import { useListConversations } from './useListConversations'
 import { MessageOperation, getQueryKey as getMessagesQueryKey } from './useListMessages'
 import { getMessages } from '../services/messages'
+import type { ConversationWithLastMessage } from '../types/conversation'
+import type { Message } from '../types/message'
 import type { User } from '../types/user'
 
 export function useListConversationsWithLastMessage(userId: User['id']) {
@@ -21,18 +23,21 @@ export function useListConversationsWithLastMessage(userId: User['id']) {
 
   const isPending = areConversationsPending || messageQueries.some((query) => query.isPending)
 
-  const data = isPending
+  const data: ConversationWithLastMessage[] | undefined = isPending
     ? undefined
     : conversations?.map((conversation, index) => {
         const messages = messageQueries[index]?.data ?? []
-        const lastMessageTimestamp = messages.reduce(
-          (latest, message) => Math.max(latest, message.timestamp),
-          0,
+        const lastMessage = messages.reduce<Message | undefined>(
+          (latest, message) =>
+            latest === undefined || message.timestamp > latest.timestamp ? message : latest,
+          undefined,
         )
 
-        return lastMessageTimestamp > 0
-          ? { ...conversation, lastMessageTimestamp }
-          : conversation
+        return {
+          ...conversation,
+          lastMessage,
+          lastMessageTimestamp: lastMessage?.timestamp ?? conversation.lastMessageTimestamp,
+        }
       })
 
   return { data, isPending, isError, refetch }

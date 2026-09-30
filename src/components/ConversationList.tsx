@@ -1,16 +1,16 @@
 import type { ReactElement } from 'react'
 import { useRef } from 'react'
 import { Conversation } from './Conversation'
-import type { Conversation as ConversationType } from '../types/conversation'
+import type { ConversationWithLastMessage } from '../types/conversation'
 import type { User } from '../types/user'
 import { useReorderAnimation } from '../hooks/useReorderAnimation'
 import { convertConversation } from '../utils/convertConversation'
 import styles from './ConversationList.module.css'
 
 interface ConversationListProps {
-  conversations: ConversationType[]
+  conversations: ConversationWithLastMessage[]
   userId: User['id']
-  selectedConversationId?: ConversationType['id']
+  selectedConversationId?: ConversationWithLastMessage['id']
 }
 
 export function ConversationList({

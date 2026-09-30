@@ -18,12 +18,22 @@
 
 .details {
   display: flex;
+  flex: 1;
   flex-direction: column;
   gap: 0.125rem;
   min-width: 0;
 }
 
+.heading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+  justify-content: space-between;
+}
+
 .nickname {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   font-weight: 500;
   white-space: nowrap;
@@ -31,6 +41,19 @@
 }
 
 .date {
+  flex: none;
   color: var(--color-text-muted);
   font-size: 0.8125rem;
+}
+
+.preview {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.prefix {
+  color: var(--color-text);
 }
