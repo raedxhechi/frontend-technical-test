@@ -5,3 +5,11 @@ export interface Message {
   timestamp: number
   body: string
 }
+
+export interface MessageSummary {
+  id: number
+  body: string
+  time: string
+  isFromLoggedUser: boolean
+  isPending: boolean
+}

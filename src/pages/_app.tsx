@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { AppProps } from 'next/app'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { getLoggedUserId } from '../utils/getLoggedUserId'
 import '../styles/globals.css'
 
@@ -13,7 +14,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
+      <ErrorBoundary>
+        <Component {...pageProps} />
+      </ErrorBoundary>
     </QueryClientProvider>
   )
 }

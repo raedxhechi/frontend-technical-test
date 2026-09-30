@@ -69,3 +69,20 @@ If you are out of ideas, here are some thoughts :
 - Our goal is to support everybody in the country, including people with disabilities. As a good citizen and a good developer, can you make sure the app is accessible for everyone ?
 
 - We all love to relax after a hard day’s work. It would be a shame if we didn’t feel confident enough about the upcoming automatic deployment. Are you sure everything has been tested thoroughly ?
+
+---
+
+# Implementation notes
+
+## Conversation ordering
+
+`Conversation.lastMessageTimestamp` cannot be relied on, and cannot be corrected from the client:
+
+- it is already inconsistent in the sample data — conversation 1 carries the timestamp of its _first_ message rather than its last;
+- sending a message does not refresh it, and no endpoint exists to do so: `PATCH` and `PUT` on a conversation both answer `404`, and the swagger defines only `GET`, `POST` and `DELETE` for that resource.
+
+Ordering the list on that field would therefore be wrong on first load, and would never reflect a message the user had just sent — leaving the app technically functional but not trustworthy.
+
+The list instead loads each conversation's messages and derives last activity from them. This is an N+1: one request per conversation. It is a deliberate stopgap that makes the ordering correct today, but its cost grows linearly with the number of conversations, and it should be replaced as soon as the API can return the last message alongside each conversation.
+
+It does pay for itself in the meantime: those requests populate the same React Query cache entries the thread view reads, so opening a conversation renders from cache rather than waiting on a request.
