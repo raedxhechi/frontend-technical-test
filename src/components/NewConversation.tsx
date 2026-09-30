@@ -1,26 +1,30 @@
 import type { MouseEvent, ReactElement } from 'react'
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 import { Avatar } from './Avatar'
+import { useCreateConversation } from '../hooks/useCreateConversation'
 import { useListUsers } from '../hooks/useListUsers'
 import type { ConversationWithLastMessage } from '../types/conversation'
 import type { User } from '../types/user'
 import { convertConversation } from '../utils/convertConversation'
 import styles from './NewConversation.module.css'
 
+const MILLISECONDS_PER_SECOND = 1000
+
 interface NewConversationProps {
   conversations: ConversationWithLastMessage[]
   userId: User['id']
-  onSelect?: (user: User) => void
 }
 
 export function NewConversation({
   conversations,
   userId,
-  onSelect,
 }: NewConversationProps): ReactElement {
   const [isOpen, setIsOpen] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const router = useRouter()
   const { data: users, isPending, isError } = useListUsers(isOpen)
+  const { mutate: create, isPending: isCreating } = useCreateConversation(userId)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -53,8 +57,23 @@ export function NewConversation({
   }
 
   const handleSelect = (user: User) => {
-    onSelect?.(user)
-    setIsOpen(false)
+    const loggedUser = (users ?? []).find((candidate) => candidate.id === userId)
+
+    create(
+      {
+        senderId: userId,
+        senderNickname: loggedUser?.nickname ?? '',
+        recipientId: user.id,
+        recipientNickname: user.nickname,
+        lastMessageTimestamp: Math.floor(Date.now() / MILLISECONDS_PER_SECOND),
+      },
+      {
+        onSuccess: (created) => {
+          setIsOpen(false)
+          router.push(`/conversations/${created.id}`)
+        },
+      },
+    )
   }
 
   return (
@@ -115,6 +134,7 @@ export function NewConversation({
                     type="button"
                     className={styles.user}
                     onClick={() => handleSelect(user)}
+                    disabled={isCreating}
                   >
                     <Avatar nickname={user.nickname} />
                     <span className={styles.nickname}>{user.nickname}</span>
