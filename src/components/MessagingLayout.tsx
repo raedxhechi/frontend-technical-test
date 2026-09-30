@@ -32,7 +32,11 @@ export function MessagingLayout({ children }: MessagingLayoutProps): ReactElemen
         {isPending && <p className={styles.state}>Chargement des conversations…</p>}
         {isError && <p className={styles.state}>Les conversations n’ont pas pu être chargées.</p>}
 
-        {conversations && (
+        {conversations?.length === 0 && (
+          <p className={styles.state}>Vous n’avez aucune conversation.</p>
+        )}
+
+        {conversations && conversations.length > 0 && (
           <div className={styles.scroller}>
             <ConversationList
               conversations={conversations}
